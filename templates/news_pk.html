@@ -1,0 +1,91 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+
+   <h3><em>Акутальная дата и время: {% current_time '%d-%m-%Y %H:%M:%S' %}</em></h3>
+   <h3><p>{{ next_sale|default_if_none:"Скоро обновление новостей!" }}<img src="https://html5-editor.net/tinymce/plugins/emoticons/img/smiley-cool.gif" alt="cool" /></p> </h3>
+   <hr>
+   {% if post %}
+       <table>
+           <tr>
+               <td><h3>Автор</h3></td>
+               <td><h3>Тип публикации</h3></td>
+               <td><h3>Категория</h3></td>
+               <td><h3>Заголовок</h3></td>
+               <td><h3>Дата публикации</h3></td>
+               <td><h3>Текст</h3></td>
+           </tr>
+
+           <tr>
+               <td><h6>{{ post.author | currency:'Fi' | censor}}</h6></td>
+               <td><h6>{{ post.get_post_type_display }}</h6></td>
+               <td><h6>{% for category in post.categories.all %}  {{categories}} {% endfor %} </h6></td>
+               <td><h6>{{ post.title | censor}}</h6></td>
+               <td><h6>{{ post.time_created|date:'j.m.Y' }}</h6></td>
+               <td><h6>{{ post.text | censor }}</h6></td>>
+           </tr>
+           <style>
+               table {
+               width: 950px;
+               margin: auto;
+               }
+               td {
+               text-align: center;
+               }
+           </style>
+
+
+       </table>
+
+
+   {% else %}
+       <h2>Постов нет!!</h2>
+   {% endif %}
+
+   {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+
+
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+
+<a class="btn btn-primary" href="{% url 'post_delete' post.id %}"> Удалить </a>
+<a class="btn btn-primary" href="{% url 'post_update' post.id %}"> Редактировать </a>
+
+<hr>
+
+<button type="button" class="btn btn-danger" href=" ">Подписаться</button>
+<style>
+               button {
+               width: 250px;
+               margin: auto;
+
+               }
+
+           </style>
+
+
+
+{% endblock content %}
